@@ -5,7 +5,7 @@ const users = require('../models/users.model')
 
 const getBugs = async (req, res) => {
     try {
-        const issuesData = await issuetracker.find().populate('projectId').populate('moduleId').populate('assignedTo').populate('reportedBy').populate('createdby').populate('status').exec()
+        const issuesData = await issuetracker.find().populate('projectId').populate('moduleId').populate({path:'assignedTo',select:'username'}).populate({path:'reportedBy', select:'username'}).populate({path:'createdby', select:'username'}).exec()
         res.send(issuesData)
     } catch (error) {
         res.send(error)
