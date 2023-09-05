@@ -41,14 +41,14 @@ const updateModule = async (req, res) => {
         const issueTrackerData = await issueTracker.findOne({ moduleId: id });
 
         if (issueTrackerData) {
-            res.status(405).json({ message: "Cannot update module assigned to a user" });
+            res.status(405).json({ message: "Cannot update module assigned to a user", status:405 , error:true });
         } else {
             const dataUpdate = await modules.findByIdAndUpdate(id, updatingData, { new: true });
-            res.json(dataUpdate);
+            res.status(201).json({message:"Success", status:201 , error:false, response:dataUpdate});
         }
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: "An error occurred while updating the module" });
+        res.status(500).json({ message: "An error occurred while updating the module", });
     }
 };
 

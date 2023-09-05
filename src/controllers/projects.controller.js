@@ -40,18 +40,19 @@ const updateProject = async (req, res) => {
         description: description
     }
     try {
-        const issueTrackerData = await issueTracker.findOne({projectId:id})
+        const issueTrackerData = await issueTracker.findOne({ projectId: id })
 
         if (issueTrackerData) {
-            res.status(405).json({ message: "Cannot update project assigned to a user" });
+            res.status(405).json({ message: "Cannot update project assigned to a user", status: 405, error: true });
         } else {
-            const dataUpdate = await modules.findByIdAndUpdate(id, updatingData, { new: true });
-            res.json(dataUpdate);
+            const dataUpdate = await projects.findByIdAndUpdate(id, updatingData, { new: true });
+            res.status(201).json({ message: "Success", status: 201, error: false, response: dataUpdate });
         }
 
     }
     catch (error) {
-        res.send(errorHandler)
+        console.error(error);
+        res.status(500).json({ message: "An error occurred while updating the project", });
     }
 }
 
@@ -62,10 +63,10 @@ const deleteProject = async (req, res) => {
         const issueTrackerData = await issueTracker.findOne({ projectId: id });
 
         if (issueTrackerData) {
-            return res.status(405).json({ message: "Cannot delete project assigned to a user" , status:405 , error:true});
+            return res.status(405).json({ message: "Cannot delete project assigned to a user", status: 405, error: true });
         } else {
             await projects.findByIdAndDelete(id);
-            return res.status(204).json({ message: "Success" , status: 204 , error: false });
+            return res.status(204).json({ message: "Success", status: 204, error: false });
         }
     } catch (error) {
         console.error(error);
