@@ -6,7 +6,7 @@ const { formatRoute } = require('../utils/helpers')
 
 const getBugs = async (req, res) => {
     try {
-        const issuesData = await issuetracker.find().populate('projectId').populate('moduleId').populate({path:'assignedTo',select:'username'}).populate({path:'reportedBy', select:'username'}).populate({path:'createdby', select:'username'}).exec()
+        const issuesData = await issuetracker.find().populate('projectId').populate('moduleId').populate({ path: 'assignedTo', select: 'username' }).populate({ path: 'reportedBy', select: 'username' }).populate({ path: 'createdby', select: 'username' }).exec()
         res.send(issuesData)
     } catch (error) {
         res.send(error)
@@ -22,14 +22,14 @@ const assignedTo = async (req, res) => {
             .populate('moduleId')
             .populate({
                 path: 'assignedTo',
-                select: 'username' 
+                select: 'username'
             })
             .populate('reportedBy')
             .populate('status')
             .exec();
-    
+
         console.log(issuesData);
-        
+
         const userIssues = issuesData.filter(issue => issue.assignedTo.username === username);
 
         if (userIssues.length > 0) {
@@ -53,12 +53,12 @@ const reportedBy = async (req, res) => {
             .populate('assignedTo')
             .populate({
                 path: 'reportedBy',
-                select: 'username' 
+                select: 'username'
             })
             .populate('status')
             .exec();
-    
-        
+
+
         const userIssues = issuesData.filter(issue => issue.reportedBy.username === username);
 
         if (userIssues.length > 0) {
@@ -75,12 +75,12 @@ const reportedBy = async (req, res) => {
 
 const createBugs = async (req, res) => {
     try {
-        const { bug_description, bug_id , projectId, bug_type, moduleId, status, assignedTo, reportedBy, severity, sprint, customerfound, estimate_date, createdby, createddate } = req.body
+        const { bug_description, bug_id, projectId, bug_type, moduleId, status, assignedTo, reportedBy, severity, sprint, customerfound, estimate_date, createdby, createddate } = req.body
         const data = new issuetracker({
-            bug_id:bug_id,
+            bug_id: bug_id,
             bug_description: bug_description,
-            bug_type:bug_type,
-            severity:severity,
+            bug_type: bug_type,
+            severity: severity,
             projectId: projectId,
             moduleId: moduleId,
             status: status,
@@ -94,41 +94,43 @@ const createBugs = async (req, res) => {
         const datas = await data.save()
         //issueStatusData
         const issueStatusData = new issueStatus({
-            bug_id:bug_id,
-            status:status,
-            createdby:createdby
+            bug_id: bug_id,
+            status: status,
+            createdby: createdby
         })
         const issueData = await issueStatusData.save()
-        res.send({datas,issueData})
+        res.send({ datas, issueData })
     } catch (error) {
         res.send(error)
     }
 }
 
-const generateBugId = async(req, res) =>{
-    const id = req.params.id
+const generateBugId = async (req, res) => {
+    const id = req.params.id;
     try {
-        const countDoc = await issuetracker.countDocuments()
-        const findData = await projects.findById(id)
-        const bugId = `${formatRoute(findData.title)}-product-${(countDoc + 1).toString().padStart(5,'0')}`
-        res.json(bugId)
-    } catch (error) {
-        res.json(error)
-    }
-}
+        const countDoc = await issuetracker.countDocuments();
+        const nextBugId = `${(countDoc + 1).toString().padStart(5, '0')}`;
+        const findData = await projects.findById(id);
 
+        const bugId = `${formatRoute(findData.title)}-product-${nextBugId}`;
+        res.json(bugId);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'An error occurred while generating the bug ID' });
+    }
+};
 const updateBugs = async (req, res) => {
     try {
         const id = req.body._id
-        const {  status } = req.body
+        const { status } = req.body
         const dataToUpdate = {
             status: status,
         }
         const updatedData = await issuetracker.findByIdAndUpdate(id, dataToUpdate, { new: true })
         const issueStatusData = new issueStatus({
-            bug_id:updatedData.bug_id,
-            status:updatedData.status,
-            createdby:updatedData.createdby,
+            bug_id: updatedData.bug_id,
+            status: updatedData.status,
+            createdby: updatedData.createdby,
         })
         await issueStatusData.save()
         res.send(updatedData)
@@ -149,4 +151,4 @@ const deleteBugs = async (req, res) => {
 
 
 
-module.exports = { getBugs, createBugs, updateBugs, deleteBugs, assignedTo , reportedBy , generateBugId}
+module.exports = { getBugs, createBugs, updateBugs, deleteBugs, assignedTo, reportedBy, generateBugId }

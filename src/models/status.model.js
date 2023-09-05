@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
 const statusSchema = mongoose.Schema({
-    statusname: {
+    bug_id: {
         type:String,
         required: true
     }
