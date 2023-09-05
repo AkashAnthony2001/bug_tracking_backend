@@ -133,7 +133,7 @@ const updateBugs = async (req, res) => {
             createdby: updatedData.createdby,
         })
         await issueStatusData.save()
-        res.send(updatedData)
+        res.status(201).json({status:"success",error:false,message:"Stataus Updated ."})
     } catch (error) {
         res.send(error)
     }
