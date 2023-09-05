@@ -40,20 +40,13 @@ const updateProject = async (req, res) => {
         description: description
     }
     try {
-        const issueTrackerData = await issueTracker.find().populate({
-            path: 'projectId',
-            select: '_id'
-        })
+        const issueTrackerData = await issueTracker.findOne({projectId:id})
 
-        const projectData = issueTrackerData.filter(data => {
-            return data.projectId._id == id
-        })
-
-        if (projectData.length > 0) {
-            res.status(405).send({ message: "Cannot Update Project Assigned to a User" })
+        if (issueTrackerData) {
+            res.status(405).json({ message: "Cannot update project assigned to a user" });
         } else {
-            const dataToSet = await projects.findByIdAndUpdate(id, dataToUpdate, { new: true })
-            res.json(dataToSet)
+            const dataUpdate = await modules.findByIdAndUpdate(id, updatingData, { new: true });
+            res.json(dataUpdate);
         }
 
     }
@@ -63,30 +56,23 @@ const updateProject = async (req, res) => {
 }
 
 const deleteProject = async (req, res) => {
-    const id = req.params.id
+    const id = req.params.id;
 
     try {
-        const issueTrackerData = await issueTracker.find().populate({
-            path: 'projectId',
-            select: '_id'
-        })
+        const issueTrackerData = await issueTracker.findOne({ projectId: id });
 
-        const projectData = issueTrackerData.filter(data => {
-            return data.projectId._id == id
-        })
-
-        if (projectData.length > 0) {
-            res.status(405).send({ message: "Cannot Delete Project Assigned to a User" })
+        if (issueTrackerData) {
+            return res.status(405).json({ message: "Cannot delete project assigned to a user" , status:405 , error:true});
         } else {
-            await projects.findByIdAndDelete(id)
-            res.status(204).end()
+            await projects.findByIdAndDelete(id);
+            return res.status(204).json({ message: "Success" , status: 204 , error: false });
         }
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "An error occurred while deleting the project" });
     }
-    catch (error) {
-        res.send("Error")
-    }
+};
 
-}
 
 
 module.exports = { getAllProjects, createProject, updateProject, deleteProject }
