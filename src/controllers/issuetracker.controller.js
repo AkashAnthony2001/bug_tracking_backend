@@ -1,6 +1,7 @@
 const issueStatus = require('../models/issuestatus.model')
 const issuetracker = require('../models/issuetracker.model')
-const users = require('../models/users.model')
+const statuses = require('../models/counter.model')
+const { formatRoute } = require('../utils/helpers')
 
 
 const getBugs = async (req, res) => {
@@ -104,29 +105,32 @@ const createBugs = async (req, res) => {
     }
 }
 
+const generateBugId = async(req, res) =>{
+    const id = req.params.id
+    try {
+        const countDoc = await issuetracker.countDocuments()
+        const findData = await issuetracker.findById(id).populate({path:'projectId',select:'title'})
+        const bugId = `${formatRoute(findData.projectId.title)}-product-${(countDoc + 1).toString().padStart(5,'0')}`
+        res.json(bugId)
+    } catch (error) {
+        res.json(error)
+    }
+}
+
 const updateBugs = async (req, res) => {
     try {
         const id = req.body._id
-        const { bug_description , projectId, moduleId, status, assignedTo, reportedBy, bug_type, severity, sprint, customerfound, estimate_date, createdby, createddate } = req.body
+        const {  status } = req.body
         const dataToUpdate = {
-            bug_description: bug_description,
-            projectId: projectId,
-            moduleId: moduleId,
             status: status,
-            bug_type:bug_type,
-            severity:severity,
-            assignedTo: assignedTo,
-            reportedBy: reportedBy,
-            sprint: sprint,
-            customerfound: customerfound,
-            estimate_date: estimate_date,
-            createdby: createdby,
-            createddate: createddate
         }
-
-        console.log(req.body);
         const updatedData = await issuetracker.findByIdAndUpdate(id, dataToUpdate, { new: true })
-        // console.log(updatedData);
+        const issueStatusData = new issueStatus({
+            bug_id:updatedData.bug_id,
+            status:updatedData.status,
+            createdby:updatedData.createdby,
+        })
+        await issueStatusData.save()
         res.send(updatedData)
     } catch (error) {
         res.send(error)
@@ -143,4 +147,6 @@ const deleteBugs = async (req, res) => {
     }
 }
 
-module.exports = { getBugs, createBugs, updateBugs, deleteBugs, assignedTo , reportedBy}
+
+
+module.exports = { getBugs, createBugs, updateBugs, deleteBugs, assignedTo , reportedBy , generateBugId}

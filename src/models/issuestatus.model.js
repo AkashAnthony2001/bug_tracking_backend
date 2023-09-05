@@ -13,6 +13,7 @@ const issueStatusSchema = new mongoose.Schema({
     },
     createdby:{
         type: Schema.Types.ObjectId,
+        ref:'users',
         required:true
     }
 },
