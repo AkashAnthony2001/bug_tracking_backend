@@ -3,11 +3,15 @@ const issuestatus = require('../models/issuestatus.model')
 const getIssueStatus = async (req, res) => {
     try {
         const issueStatusData = await issuestatus.find()
-        .populate({path:'issuetracker',select:'bug_id'})
-        .populate({path:'issuetracker',select:'status'})
-        .populate({path:'issuetracker',select:'createdby'})
-        .exec();
-        res.send(issueStatusData)
+            .populate({ path: 'issuetracker', select: 'bug_id' })
+            .populate({ path: 'issuetracker', select: 'status' })
+            .populate({ path: 'issuetracker', select: 'createdby' })
+            .exec();
+
+        if (!issueStatusData) {
+            res.status(404).json({ message: "failed", error: true, status: 404, response: issueStatusData })
+        }
+        res.status(200).json({ message: "success", error: false, status: 200, response: issueStatusData })
     } catch (error) {
         res.send(error)
     }
@@ -15,11 +19,11 @@ const getIssueStatus = async (req, res) => {
 
 const createIssueStatus = async (req, res) => {
     try {
-        const { bugid , status , createdby } = req.body;
+        const { bugid, status, createdby } = req.body;
         const issueStatusData = new issuestatus({
-            bugid:bugid,
-            status:status,
-            createdby:createdby
+            bugid: bugid,
+            status: status,
+            createdby: createdby
         })
         const result = await issueStatusData.save()
         res.send(result)
@@ -31,13 +35,13 @@ const createIssueStatus = async (req, res) => {
 const updateIssueStatus = async (req, res) => {
     const id = req.params.id;
     try {
-        const { bugid , status , createdby } = req.body
+        const { bugid, status, createdby } = req.body
         const dataToUpdate = {
             bugid: bugid,
             status: status,
             createdby: createdby
         }
-        const updatedData = await issuestatus.findByIdAndUpdate(id,dataToUpdate,{new:true})
+        const updatedData = await issuestatus.findByIdAndUpdate(id, dataToUpdate, { new: true })
         res.send(updatedData)
     } catch (error) {
         res.send(error)
@@ -54,4 +58,4 @@ const deleteIssueStatus = async (req, res) => {
     }
 }
 
-module.exports = { getIssueStatus , createIssueStatus , updateIssueStatus , deleteIssueStatus }
+module.exports = { getIssueStatus, createIssueStatus, updateIssueStatus, deleteIssueStatus }
