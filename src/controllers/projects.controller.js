@@ -24,7 +24,7 @@ const createProject = async (req, res) => {
             projectRoute: projectRoute
         })
         const result = await createData.save()
-        res.send(result)
+        res.status(200).json({status:200, message:"Project Successfully Created !", error:false, response:result})
     }
     catch (error) {
         res.send(error)

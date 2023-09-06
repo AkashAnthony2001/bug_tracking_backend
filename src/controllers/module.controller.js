@@ -21,7 +21,7 @@ const createModule = async (req, res) => {
             module_description: module_description
         })
         const result = await createData.save()
-        res.send(result)
+        res.status(200).json({status:200, message:"Module Successfully Created !", error:false, response:result})
 
     } catch (error) {
         res.send(error)
