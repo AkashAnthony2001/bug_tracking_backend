@@ -3,9 +3,7 @@ const issuestatus = require('../models/issuestatus.model')
 const getIssueStatus = async (req, res) => {
     try {
         const issueStatusData = await issuestatus.find()
-            .populate({ path: 'issuetracker', select: 'bug_id' })
-            .populate({ path: 'issuetracker', select: 'status' })
-            .populate({ path: 'issuetracker', select: 'createdby' })
+            .populate({ path: 'createdby', select: 'username' })
             .exec();
 
         if (!issueStatusData) {

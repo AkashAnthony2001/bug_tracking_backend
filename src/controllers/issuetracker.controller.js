@@ -56,6 +56,7 @@ const reportedBy = async (req, res) => {
                 select: 'username'
             })
             .populate('status')
+            .populate({ path: 'createdby', select: 'username' })
             .exec();
 
 
@@ -133,7 +134,7 @@ const updateBugs = async (req, res) => {
             createdby: updatedData.createdby,
         })
         await issueStatusData.save()
-        res.status(201).json({status:"success",error:false,message:"Stataus Updated ."})
+        res.status(201).json({ status: "success", error: false, message: "Stataus Updated ." })
     } catch (error) {
         res.send(error)
     }
