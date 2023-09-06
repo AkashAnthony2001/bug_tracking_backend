@@ -59,14 +59,14 @@ const deleteModule = async (req, res) => {
         const issueTrackerData = await issueTracker.findOne({ moduleId: id });
 
         if (issueTrackerData) {
-            return res.status(405).json({ message: "Cannot delete module assigned to a user" , status:405 , error:true});
+            res.status(405).json({ message: "Cannot delete module assigned to a user" , status:405 , error:true});
         } else {
             await modules.findByIdAndDelete(id);
-            return res.status(204).json({ message: "Success" , status: 204 , error: false });
+            res.status(200).json({ message: "Success" , status: 200 , error: false });
         }
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ error: "An error occurred while deleting the module" });
+        res.status(500).json({ error: "An error occurred while deleting the module" });
     }
 }
 

@@ -45,7 +45,7 @@ const updateProject = async (req, res) => {
         if (issueTrackerData) {
             res.status(405).json({ message: "Cannot update project assigned to a user", status: 405, error: true });
         } else {
-            const dataUpdate = await projects.findByIdAndUpdate(id, updatingData, { new: true });
+            const dataUpdate = await projects.findByIdAndUpdate(id, dataToUpdate, { new: true });
             res.status(201).json({ message: "Success", status: 201, error: false, response: dataUpdate });
         }
 
@@ -63,14 +63,14 @@ const deleteProject = async (req, res) => {
         const issueTrackerData = await issueTracker.findOne({ projectId: id });
 
         if (issueTrackerData) {
-            return res.status(405).json({ message: "Cannot delete project assigned to a user", status: 405, error: true });
+            res.status(405).json({ message: "Cannot delete project assigned to a user", status: 405, error: true });
         } else {
             await projects.findByIdAndDelete(id);
-            return res.status(204).json({ message: "Success", status: 204, error: false });
+            res.status(200).json({ message: "Success", status: 200, error: false });
         }
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ error: "An error occurred while deleting the project" });
+        res.status(500).json({ error: "An error occurred while deleting the project" });
     }
 };
 
