@@ -16,7 +16,6 @@ const projectUserMapRouter = require('./routes/projectusermap.routes')
 const projectModuleMapRouter = require('./routes/projectmodulemap.routes')
 const issueTrackerRouter = require('./routes/issuetracker.routes')
 const issueStatusRouter = require('./routes/issuestatus.routes')
-const statusRouter = require('./routes/status.routes')
 
 connectDb();
 
@@ -38,7 +37,6 @@ app.use('/api/projectusermap/', projectUserMapRouter)
 app.use('/api/projectmodulemap/', projectModuleMapRouter)
 app.use('/api/issuetracker/', issueTrackerRouter)
 app.use('/api/issuestatus/', issueStatusRouter)
-app.use('/api/status/', statusRouter)
 
 // app.get('/api/submitted_by/:user', getSubmissions)
 // app.get('/api/assigned_to/:user', getAssignments)
