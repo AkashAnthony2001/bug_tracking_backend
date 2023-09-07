@@ -1,7 +1,7 @@
 const { Router } = require('express')
 
 const {
-  createUser, getUser, getAllUsers, deleteUser,
+  createUser, getUser, getAllUsers, deleteUser, editUsers,
 } = require('../controllers/users.controller')
 
 const usersRouter = Router()
@@ -9,6 +9,7 @@ const usersRouter = Router()
 usersRouter.get('/',getAllUsers)
 usersRouter.post('/', createUser)
 usersRouter.get('/:username', getUser)
-usersRouter.delete('/',deleteUser)
+usersRouter.delete('/:id',deleteUser)
+usersRouter.put('/:id',editUsers)
 
 module.exports = usersRouter

@@ -57,6 +57,23 @@ const getAllUsers = async (req,res) => {
     }
 }
 
+const editUsers = async(req,res) => {
+    const id = req.params.id
+    const { username , name , role  } = req.body
+    const updatingData = {
+        username:username,
+        name:name,
+        role:role
+    }
+    try {
+        const updateData = await users.findByIdAndUpdate(id,updatingData,{new:true})
+        res.status(200).json({message:"Updated Successfully", status:200, error:false , response:updateData})
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Error while updating user" });
+    }
+}
+
 const deleteUser = async (req,res) => {
     const id = req.params.id
     try {
@@ -68,4 +85,4 @@ const deleteUser = async (req,res) => {
     }
 }
 
-module.exports = { createUser, getUser , getAllUsers , deleteUser};
+module.exports = { createUser, getUser , getAllUsers , deleteUser, editUsers};
