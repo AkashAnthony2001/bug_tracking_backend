@@ -30,6 +30,23 @@ const createIssueStatus = async (req, res) => {
     }
 }
 
+const getByBugId = async (req, res) => {
+    const bugid = req.params.id
+    try {
+        const statusData = await issuestatus.find({ bug_id: bugid });
+        console.log(statusData);
+        console.log(bugid);
+        if (statusData.length > 0) {
+            res.status(200).send({ message: "Success", error: false, response: statusData, status: 200 })
+            return;
+        }
+        res.status(404).send({ message: "No Data Found", error: true, response: statusData, status: 404 })
+    }
+    catch (error) {
+        res.status(500).send({ error: "Error while fetching Data" })
+    }
+}
+
 const updateIssueStatus = async (req, res) => {
     const id = req.params.id;
     try {
@@ -56,4 +73,4 @@ const deleteIssueStatus = async (req, res) => {
     }
 }
 
-module.exports = { getIssueStatus, createIssueStatus, updateIssueStatus, deleteIssueStatus }
+module.exports = { getIssueStatus, createIssueStatus, updateIssueStatus, deleteIssueStatus, getByBugId }

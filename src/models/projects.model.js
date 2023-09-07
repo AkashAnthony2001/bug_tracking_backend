@@ -10,8 +10,7 @@ const projectSchema = mongoose.Schema({
         required:true
     },
     description:{
-        type:String,
-        required:true
+        type:String
     },
     projectRoute:{
         type:String,

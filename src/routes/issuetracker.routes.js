@@ -11,6 +11,6 @@ issueTrackerRouter.get('/reported/:username', reportedBy)
 issueTrackerRouter.post('/', createBugs)
 issueTrackerRouter.put('/:id', updateBugs)
 issueTrackerRouter.delete('/:id', deleteBugs)
-issueTrackerRouter.get('/:id',generateBugId)
+issueTrackerRouter.get('/generateId/',generateBugId)
 
 module.exports = issueTrackerRouter

@@ -1,6 +1,7 @@
 const issueStatus = require('../models/issuestatus.model')
 const issuetracker = require('../models/issuetracker.model')
 const projects = require('../models/projects.model')
+const modules = require('../models/module.model')
 const { formatRoute } = require('../utils/helpers')
 
 
@@ -107,13 +108,14 @@ const createBugs = async (req, res) => {
 }
 
 const generateBugId = async (req, res) => {
-    const id = req.params.id;
+    const { projectid , moduleid } = req.body;
     try {
         const countDoc = await issuetracker.countDocuments();
         const nextBugId = `${(countDoc + 1).toString().padStart(5, '0')}`;
-        const findData = await projects.findById(id);
+        const projectData = await projects.findById(projectid);
+        const moduleData = await modules.findById(moduleid);
 
-        const bugId = `${formatRoute(findData.title)}-product-${nextBugId}`;
+        const bugId = `${formatRoute(projectData.title)}-${moduleData.module_name}-${nextBugId}`;
         res.json(bugId);
     } catch (error) {
         console.error(error);

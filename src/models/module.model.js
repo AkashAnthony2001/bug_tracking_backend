@@ -6,8 +6,7 @@ const moduleSchema = new mongoose.Schema({
         required:true
     },
     module_description:{
-        type:String,
-        required:true
+        type:String
     }
 })
 
