@@ -57,4 +57,15 @@ const getAllUsers = async (req,res) => {
     }
 }
 
-module.exports = { createUser, getUser , getAllUsers };
+const deleteUser = async (req,res) => {
+    const id = req.params.id
+    try {
+        await users.findByIdAndDelete(id)
+        res.status(200).json({ message: "Success", status: 200, error: false });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Error while deleteing user" });
+    }
+}
+
+module.exports = { createUser, getUser , getAllUsers , deleteUser};
