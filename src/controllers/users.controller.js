@@ -17,12 +17,13 @@ const createUser = async (req, res) => {
         const saltRounds = 10;
         const passwordHash = await bcrypt.hash(password, saltRounds);
 
+        
         const newData = new users({
             username: username,
             name: name,
             password: passwordHash,
             role: role,
-            isAdmin: isAdmin
+            isAdmin: role === 'admin' ? true : isAdmin
         });
         await newData.save();
         
