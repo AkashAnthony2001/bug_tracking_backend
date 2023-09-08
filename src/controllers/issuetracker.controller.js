@@ -115,8 +115,9 @@ const generateBugId = async (req, res) => {
         const projectData = await projects.findById(projectid);
         const moduleData = await modules.findById(moduleid);
 
-        const bugId = `${formatRoute(projectData.title)}-${moduleData.module_name}-${nextBugId}`;
-        res.json(bugId);
+        const bugId = `${formatRoute(projectData.title)}-${formatRoute(moduleData.module_name)}-${nextBugId}`;
+        console.log(projectData);
+        res.status(200).json({status:200, message:"Bug Id Created", reponse:bugId, error:false});
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'An error occurred while generating the bug ID' });

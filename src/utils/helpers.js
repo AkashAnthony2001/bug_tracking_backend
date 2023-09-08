@@ -1,6 +1,5 @@
 const formatRoute = (str) => {
-
-  return str.toLowerCase() .replace(/[,-_\/\s]/g, '');
+  return str.toLowerCase().replace(/[,_\/\s-]/g, '');
 }
 
 const getTokenFrom = request => {
