@@ -66,7 +66,7 @@ const deleteProject = async (req, res) => {
             res.status(405).json({ message: "Cannot delete project assigned to a user", status: 405, error: true });
         } else {
             await projects.findByIdAndDelete(id);
-            res.status(200).json({ message: "Success", status: 200, error: false });
+            res.status(200).json({ message: "Project Deleted", status: 200, error: false });
         }
     } catch (error) {
         console.error(error);

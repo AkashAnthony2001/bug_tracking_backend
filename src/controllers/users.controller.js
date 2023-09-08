@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
 const users = require('../models/users.model');
+const issueTracker = require('../models/issuetracker.model')
 
 const createUser = async (req, res) => {
     console.log(req.body);
@@ -77,8 +78,14 @@ const editUsers = async(req,res) => {
 const deleteUser = async (req,res) => {
     const id = req.params.id
     try {
-        await users.findByIdAndDelete(id)
-        res.status(200).json({ message: "Success", status: 200, error: false });
+        const issueTrackerData = await issueTracker.findOne({ assignedTo: id });
+
+        if (issueTrackerData) {
+            res.status(405).json({ message: "Cannot delete User assigned to a project", status: 405, error: true });
+        } else {
+            await users.findByIdAndDelete(id);
+            res.status(200).json({ message: "User Deleted", status: 200, error: false });
+        }
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: "Error while deleteing user" });

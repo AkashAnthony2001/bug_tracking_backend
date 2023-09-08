@@ -137,7 +137,7 @@ const updateBugs = async (req, res) => {
             createdby: updatedData.createdby,
         })
         await issueStatusData.save()
-        res.status(201).json({ status: "success", error: false, message: "Stataus Updated ." })
+        res.status(201).json({ status: "success", error: false, message: "Status Updated" })
     } catch (error) {
         res.send(error)
     }
@@ -146,8 +146,7 @@ const updateBugs = async (req, res) => {
 const deleteBugs = async (req, res) => {
     try {
         const id = req.params.id
-        await issuetracker.findByIdAndDelete(id)
-        res.status(204).end()
+        
     } catch (error) {
         res.send(error)
     }

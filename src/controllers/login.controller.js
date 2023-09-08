@@ -40,7 +40,8 @@ const loginUser = async (req, res) => {
         res.status(200).json({
             token,
             username: userData.username,
-            name: userData.name
+            name: userData.name,
+            role:userData.role
         });
     } catch (error) {
         console.log(error);
