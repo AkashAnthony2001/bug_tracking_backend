@@ -3,8 +3,6 @@ const issuestatus = require('../models/issuestatus.model')
 const getIssueStatus = async (req, res) => {
     try {
         const issueStatusData = await issuestatus.find()
-            .populate({ path: 'createdby', select: 'username' })
-            .exec();
 
         if (!issueStatusData) {
             res.status(404).json({ message: "failed", error: true, status: 404, response: issueStatusData })
