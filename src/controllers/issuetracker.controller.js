@@ -126,7 +126,7 @@ const generateBugId = async (req, res) => {
 const updateBugs = async (req, res) => {
     try {
         const id = req.body._id
-        const { status } = req.body
+        const { status , updatedby } = req.body
         const dataToUpdate = {
             status: status,
         }
@@ -134,7 +134,7 @@ const updateBugs = async (req, res) => {
         const issueStatusData = new issueStatus({
             bug_id: updatedData.bug_id,
             status: updatedData.status,
-            createdby: updatedData.createdby,
+            updatedby: updatedby,
         })
         await issueStatusData.save()
         res.status(201).json({ status: "success", error: false, message: "Status Updated" })

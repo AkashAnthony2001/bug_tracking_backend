@@ -11,7 +11,7 @@ const issueStatusSchema = new mongoose.Schema({
         type: String,
         required:true
     },
-    createdby:{
+    updatedby:{
         type: String,
         required:true
     }
