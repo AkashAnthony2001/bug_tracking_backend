@@ -44,7 +44,7 @@ const updateModule = async (req, res) => {
             res.status(405).json({ message: "Cannot update module assigned to a user", status:405 , error:true });
         } else {
             const dataUpdate = await modules.findByIdAndUpdate(id, updatingData, { new: true });
-            res.status(201).json({message:"Module Deleted", status:201 , error:false, response:dataUpdate});
+            res.status(200).json({message:"Module Editied Successfully", status:200 , error:false, response:dataUpdate});
         }
     } catch (error) {
         console.error(error);
@@ -62,7 +62,7 @@ const deleteModule = async (req, res) => {
             res.status(405).json({ message: "Cannot delete module assigned to a user" , status:405 , error:true});
         } else {
             await modules.findByIdAndDelete(id);
-            res.status(200).json({ message: "Success" , status: 200 , error: false });
+            res.status(200).json({ message: "Module Deleted Successfully" , status: 200 , error: false });
         }
     } catch (error) {
         console.error(error);
