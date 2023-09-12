@@ -1,11 +1,12 @@
 const Router = require('express')
 
-const { getBugs , createBugs , updateBugs , deleteBugs , assignedTo , reportedBy , generateBugId } = require('../controllers/issuetracker.controller')
+const { getBugs , createBugs , updateBugs , deleteBugs , assignedTo , reportedBy , generateBugId , getBugsBySprint } = require('../controllers/issuetracker.controller')
 
 const issueTrackerRouter = Router();
 
 
 issueTrackerRouter.get('/', getBugs)
+issueTrackerRouter.get('/bySprint/', getBugsBySprint)
 issueTrackerRouter.get('/assigned/:username', assignedTo)
 issueTrackerRouter.get('/reported/:username', reportedBy)
 issueTrackerRouter.post('/', createBugs)

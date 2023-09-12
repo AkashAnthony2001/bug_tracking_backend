@@ -14,6 +14,33 @@ const getBugs = async (req, res) => {
     }
 }
 
+const getBugsBySprint = async (req, res) => {
+    try {
+        const dataBySprint = await issuetracker.find({}).populate({ path: 'assignedTo', select: 'username' }).select('sprint status')
+
+        const userSprints = {};
+        dataBySprint.forEach(item => {
+            const { assignedTo: { username }, sprint } = item;
+
+            if (!userSprints[username]) {
+                userSprints[username] = { user: username, totalCount: 0 };
+                for (let i = 1; i <= 10; i++) {
+                    userSprints[username][`sprint${i}`] = 0;
+                }
+            }
+            userSprints[username][`sprint${sprint}`] = userSprints[username][`sprint${sprint}`] + 1;
+            userSprints[username].totalCount++;
+        });
+        const dataset = Object.values(userSprints);
+        console.log(dataset);
+
+        res.send(dataBySprint)
+    } catch (error) {
+        res.send(error)
+
+    }
+}
+
 const assignedTo = async (req, res) => {
     const username = req.params.username;
     try {
@@ -108,7 +135,7 @@ const createBugs = async (req, res) => {
 }
 
 const generateBugId = async (req, res) => {
-    const { projectid , moduleid } = req.body;
+    const { projectid, moduleid } = req.body;
     try {
         const countDoc = await issuetracker.countDocuments();
         const nextBugId = `${(countDoc + 1).toString().padStart(5, '0')}`;
@@ -117,7 +144,7 @@ const generateBugId = async (req, res) => {
 
         const bugId = `${formatRoute(projectData.title)}-${formatRoute(moduleData.module_name)}-${nextBugId}`;
         console.log(projectData);
-        res.status(200).json({status:200, message:"Bug Id Created", response:bugId, error:false});
+        res.status(200).json({ status: 200, message: "Bug Id Created", response: bugId, error: false });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'An error occurred while generating the bug ID' });
@@ -126,7 +153,7 @@ const generateBugId = async (req, res) => {
 const updateBugs = async (req, res) => {
     try {
         const id = req.body._id
-        const { status , updatedby } = req.body
+        const { status, updatedby } = req.body
         const dataToUpdate = {
             status: status,
         }
@@ -147,12 +174,12 @@ const deleteBugs = async (req, res) => {
     try {
         const id = req.params.id
         const assigned = await issuetracker.findById(id).populate('assignedTo').exec()
-        if(assigned.assignedTo.length > 0 && assigned.status === "Closed"){
+        if (assigned.assignedTo.length > 0 && assigned.status === "Closed") {
             const deletingBugs = await issuetracker.findByIdAndDelete(id)
-            res.status(200).json({status:200 , message:"Bug Deleted ", error: false})
+            res.status(200).json({ status: 200, message: "Bug Deleted ", error: false })
         }
-        else{
-            res.status(405).json({status:405 , message:"Cannot delete bugs assigned to user", error: false})
+        else {
+            res.status(405).json({ status: 405, message: "Cannot delete bugs assigned to user", error: false })
         }
         res.send(assigned)
     } catch (error) {
@@ -162,4 +189,4 @@ const deleteBugs = async (req, res) => {
 
 
 
-module.exports = { getBugs, createBugs, updateBugs, deleteBugs, assignedTo, reportedBy, generateBugId }
+module.exports = { getBugs, createBugs, updateBugs, deleteBugs, assignedTo, reportedBy, generateBugId, getBugsBySprint }
