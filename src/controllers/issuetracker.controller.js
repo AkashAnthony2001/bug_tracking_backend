@@ -17,24 +17,25 @@ const getBugs = async (req, res) => {
 const getBugsBySprint = async (req, res) => {
     try {
         const dataBySprint = await issuetracker.find({}).populate({ path: 'assignedTo', select: 'username' }).select('sprint status')
-
-        const userSprints = {};
-        dataBySprint.forEach(item => {
-            const { assignedTo: { username }, sprint } = item;
-
-            if (!userSprints[username]) {
-                userSprints[username] = { user: username, totalCount: 0 };
-                for (let i = 1; i <= 10; i++) {
-                    userSprints[username][`sprint${i}`] = 0;
+        if(dataBySprint){
+            const userSprints = {};
+            dataBySprint.forEach(item => {
+                const { assignedTo: { username }, sprint } = item;
+                if (!userSprints[username]) {
+                    userSprints[username] = { user: username, totalCount: 0 };
+                    for (let i = 1; i <= 10; i++) {
+                        userSprints[username][`sprint${i}`] = 0;
+                    }
                 }
-            }
-            userSprints[username][`sprint${sprint}`] = userSprints[username][`sprint${sprint}`] + 1;
-            userSprints[username].totalCount++;
-        });
-        const dataset = Object.values(userSprints);
-        console.log(dataset);
-
-        res.send(dataBySprint)
+                userSprints[username][`sprint${sprint}`] = userSprints[username][`sprint${sprint}`] + 1;
+                userSprints[username].totalCount++;
+            });
+            const dataset = Object.values(userSprints);
+            res.status(200).json({message:"Success",error:false,response:dataset,status:200})
+        }
+        else{
+            res.status(404).json({message:"Error",error:true,response:[],status:404})
+        }
     } catch (error) {
         res.send(error)
 
