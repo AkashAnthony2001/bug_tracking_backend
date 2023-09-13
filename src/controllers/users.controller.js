@@ -11,7 +11,10 @@ const createUser = async (req, res) => {
 
         if (existingUser) {
             return res.status(400).json({
-                error: "Username must be unique"
+                message: "Username Already Exist",
+                status:400,
+                error:true,
+                response:[]
             });
         }
 
