@@ -78,7 +78,7 @@ const getUsersSprintData = async (req, res) => {
             };
         });
 
-        res.send(data);
+        res.status(200).json({error:false, response:data, message:'Success', status:200});
     } catch (error) {
         console.error('Error:', error);
         res.status(404).json({ message: 'Error', error: true, response: [], status: 404 });
@@ -110,7 +110,7 @@ const barAssignClosed = async(req, res) => {
     
         const statusCountData = Object.values(statusCount);
     
-        res.send(statusCountData);
+        res.status(200).json({status:200, message:"Success", error:false, response:statusCountData});
     } catch (error) {
         res.status(404).json({ message: 'Error', error: true, response: [], status: 404 });
     }
