@@ -17,7 +17,7 @@ const getBugs = async (req, res) => {
 const getBugsBySprint = async (req, res) => {
     try {
         const dataBySprint = await issuetracker.find({}).populate({ path: 'assignedTo', select: 'username' }).select('sprint status')
-        if(dataBySprint){
+        if (dataBySprint) {
             const userSprints = {};
             dataBySprint.forEach(item => {
                 const { assignedTo: { username }, sprint } = item;
@@ -31,15 +31,90 @@ const getBugsBySprint = async (req, res) => {
                 userSprints[username].totalCount++;
             });
             const dataset = Object.values(userSprints);
-            res.status(200).json({message:"Success",error:false,response:dataset,status:200})
+            res.status(200).json({ message: "Success", error: false, response: dataset, status: 200 })
         }
-        else{
-            res.status(404).json({message:"Error",error:true,response:[],status:404})
+        else {
+            res.status(404).json({ message: "Error", error: true, response: [], status: 404 })
         }
     } catch (error) {
         res.send(error)
 
     }
+}
+
+const getUsersSprintData = async (req, res) => {
+
+    try {
+        const sprintData = await issuetracker.find({}).populate({ path: 'assignedTo', select: 'username' }).select('sprint')
+
+        const dataBySprint = {};
+        sprintData.forEach(item => {
+            const username = item.assignedTo.username;
+            const sprint = `sprint${item.sprint}`;
+            if (!dataBySprint[username]) {
+                dataBySprint[username] = {};
+            }
+            if (!dataBySprint[username][sprint]) {
+                dataBySprint[username][sprint] = 0;
+            }
+            dataBySprint[username][sprint]++;
+        });
+        const sprints = [];
+        for (let i = 1; i <= 10; i++) {
+            sprints.push({
+                bugs: 0,
+                sprint: `sprint${i}`,
+            });
+        }
+        const data = Object.keys(dataBySprint).map(username => {
+            return {
+                username: username,
+                sprints: sprints.map(sprint => {
+                    return {
+                        bugs: dataBySprint[username][sprint.sprint] || 0,
+                        sprint: sprint.sprint,
+                    };
+                }),
+            };
+        });
+
+        res.send(data);
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(404).json({ message: 'Error', error: true, response: [], status: 404 });
+    }
+
+}
+
+
+const barAssignClosed = async(req, res) => {
+    try {
+        const statusData = await issuetracker.find().populate({ path: 'assignedTo', select: 'username' }).select('status')
+    
+        const statusCount = {}
+    
+        statusData.forEach(item => {
+            const username = item.assignedTo.username
+            const status = item.status
+    
+            if (!statusCount[username]) {
+                statusCount[username] = { username: username, Assigned: 0, Closed: 0 }
+            }
+    
+            if (status === "Assigned") {
+                statusCount[username].Assigned++;
+            } else if (status === "Closed") {
+                statusCount[username].Closed++;
+            }
+        });
+    
+        const statusCountData = Object.values(statusCount);
+    
+        res.send(statusCountData);
+    } catch (error) {
+        res.status(404).json({ message: 'Error', error: true, response: [], status: 404 });
+    }
+    
 }
 
 const assignedTo = async (req, res) => {
@@ -190,4 +265,4 @@ const deleteBugs = async (req, res) => {
 
 
 
-module.exports = { getBugs, createBugs, updateBugs, deleteBugs, assignedTo, reportedBy, generateBugId, getBugsBySprint }
+module.exports = { getBugs, createBugs, updateBugs, deleteBugs, assignedTo, reportedBy, generateBugId, getBugsBySprint, getUsersSprintData , barAssignClosed }
