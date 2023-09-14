@@ -7,7 +7,6 @@ const { connectDb } = require('../src/db')
 
 const usersRouter = require('./routes/users.routes')
 const loginRouter = require('./routes/login.routes')
-// const { getAssignments, getSubmissions } = require('./controllers/tickets.controller')
 
 const middleware = require('./utils/middleware')
 const projectRouter = require('./routes/project.routes')
@@ -28,7 +27,6 @@ app.use(cors())
 app.use(express.json())
 app.use(morgan('dev'))
 
-// app.use('/api/issues/', projectRouter)
 app.use('/api/users/', usersRouter)
 app.use('/api/login/', loginRouter)
 app.use('/api/projects/', projectRouter)
@@ -37,9 +35,6 @@ app.use('/api/projectusermap/', projectUserMapRouter)
 app.use('/api/projectmodulemap/', projectModuleMapRouter)
 app.use('/api/issuetracker/', issueTrackerRouter)
 app.use('/api/issuestatus/', issueStatusRouter)
-
-// app.get('/api/submitted_by/:user', getSubmissions)
-// app.get('/api/assigned_to/:user', getAssignments)
 
 app.use(middleware.unknownEndpoint)
 app.use(middleware.errorHandler)

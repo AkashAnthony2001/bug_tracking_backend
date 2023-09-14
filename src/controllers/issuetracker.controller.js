@@ -196,7 +196,6 @@ const createBugs = async (req, res) => {
             createdby: createdby
         })
         const datas = await data.save()
-        //issueStatusData
         const issueStatusData = new issueStatus({
             bug_id: bug_id,
             status: status,

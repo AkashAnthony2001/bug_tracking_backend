@@ -1,7 +1,5 @@
 const mongoose = require('mongoose')
 const { Schema } = require('mongoose')
-// const project = require('./projects.model')
-// const { formatRoute } = require('../utils/helpers')
 
 const issueTrackerSchema = new mongoose.Schema({
     bug_id:{
