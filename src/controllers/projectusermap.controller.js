@@ -5,7 +5,6 @@ const projects = require('../models/projects.model')
 const getProjectsData = async(req,res) => {
     try {
         const projectUserMapData = await projectUserMap.find().populate('username').populate('projectId').exec();
-        console.log(projectUserMapData);
         res.json(projectUserMapData)
     }
     catch (error) {

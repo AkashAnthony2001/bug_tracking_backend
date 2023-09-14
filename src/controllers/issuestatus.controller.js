@@ -32,8 +32,6 @@ const getByBugId = async (req, res) => {
     const bugid = req.params.id
     try {
         const statusData = await issuestatus.find({ bug_id: bugid });
-        console.log(statusData);
-        console.log(bugid);
         if (statusData.length > 0) {
             res.status(200).send({ message: "Success", error: false, response: statusData, status: 200 })
             return;

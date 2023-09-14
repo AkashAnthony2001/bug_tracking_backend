@@ -3,7 +3,6 @@ const users = require('../models/users.model');
 const issueTracker = require('../models/issuetracker.model')
 
 const createUser = async (req, res) => {
-    console.log(req.body);
     try {
         const { username, name, password, role , isAdmin = false } = req.body;
 
@@ -42,7 +41,6 @@ const getUser = async (req, res) => {
 
     try {
         const userData = await users.findOne({ username }); 
-        console.log(userData);
         if (!userData) {
             return res.status(404).json({ error: "User not found" });
         }

@@ -44,7 +44,6 @@ const loginUser = async (req, res) => {
             role:userData.role
         });
     } catch (error) {
-        console.log(error);
         res.status(500).json({ error: "An error occurred" });
     }
 };

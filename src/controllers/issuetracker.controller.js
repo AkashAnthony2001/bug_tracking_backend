@@ -132,7 +132,6 @@ const assignedTo = async (req, res) => {
             .populate('status')
             .exec();
 
-        console.log(issuesData);
 
         const userIssues = issuesData.filter(issue => issue.assignedTo.username === username);
 
@@ -219,7 +218,6 @@ const generateBugId = async (req, res) => {
         const moduleData = await modules.findById(moduleid);
 
         const bugId = `${formatRoute(projectData.title)}-${formatRoute(moduleData.module_name)}-${nextBugId}`;
-        console.log(projectData);
         res.status(200).json({ status: 200, message: "Bug Id Created", response: bugId, error: false });
     } catch (error) {
         console.error(error);

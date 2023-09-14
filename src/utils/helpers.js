@@ -16,7 +16,6 @@ const getTokenFrom = request => {
 }
 
 const verifyToken = (req, res, next) => {
-  console.log(req.headers);
   const authorization = req.headers.authorization
   let token;
   if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
