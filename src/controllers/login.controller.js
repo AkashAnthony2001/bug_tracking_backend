@@ -49,7 +49,6 @@ const loginUser = async (req, res) => {
 };
 
 const isAuth = async (req, res) => {
-    // Check token
     const token = getTokenFrom(req);
 
     if (!token) {
