@@ -14,6 +14,9 @@ const issueStatusSchema = new mongoose.Schema({
     updatedby:{
         type: String,
         required:true
+    },
+    comments:{
+        type:String
     }
 },
 {

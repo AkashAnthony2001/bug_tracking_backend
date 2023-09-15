@@ -50,8 +50,8 @@ const getBugsBySprint = async (req, res) => {
                 userSprints[username].totalCount++;
             });
             const dataset = Object.values(userSprints);
-            console.log(sprintStatusCounts,dataset);
-            res.status(200).json({ message: "Success", error: false, response: dataset, sprintCount:sprintStatusCounts, status: 200 })
+            const statusCount = Object.entries(sprintStatusCounts)
+            res.status(200).json({ message: "Success", error: false, response: dataset, sprintCount:statusCount, status: 200 })
         }
         else {
             res.status(404).json({ message: "Error", error: true, response: [], status: 404 })
@@ -219,7 +219,8 @@ const createBugs = async (req, res) => {
         const issueStatusData = new issueStatus({
             bug_id: bug_id,
             status: status,
-            updatedby: createdby
+            updatedby: createdby,
+            comments:"N/A"
         })
         const issueData = await issueStatusData.save()
         res.send({ datas, issueData })
@@ -245,17 +246,21 @@ const generateBugId = async (req, res) => {
 };
 const updateBugs = async (req, res) => {
     try {
-        const id = req.body._id
-        const { status, updatedby } = req.body
+        const id = req.params.id
+        console.log(req.body);
+        const { status, updatedby , comment} = req.body
         const dataToUpdate = {
             status: status,
         }
         const updatedData = await issuetracker.findByIdAndUpdate(id, dataToUpdate, { new: true })
+        console.log(updatedData);
         const issueStatusData = new issueStatus({
             bug_id: updatedData.bug_id,
             status: updatedData.status,
             updatedby: updatedby,
+            comments:req.body.comment
         })
+        console.log(issueStatusData);
         await issueStatusData.save()
         res.status(201).json({ status: "success", error: false, message: "Status Updated" })
     } catch (error) {

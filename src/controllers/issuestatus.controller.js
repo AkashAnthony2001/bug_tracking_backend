@@ -46,13 +46,16 @@ const getByBugId = async (req, res) => {
 const updateIssueStatus = async (req, res) => {
     const id = req.params.id;
     try {
-        const { bugid, status, createdby } = req.body
+        const { bugid, status, createdby, comment } = req.body
         const dataToUpdate = {
             bugid: bugid,
             status: status,
-            createdby: createdby
+            createdby: createdby,
+            comments:comment
         }
+        console.log(dataToUpdate);
         const updatedData = await issuestatus.findByIdAndUpdate(id, dataToUpdate, { new: true })
+        console.log(updatedData);
         res.send(updatedData)
     } catch (error) {
         res.send(error)
