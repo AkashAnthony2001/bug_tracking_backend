@@ -16,9 +16,28 @@ const getBugs = async (req, res) => {
 
 const getBugsBySprint = async (req, res) => {
     try {
-        const dataBySprint = await issuetracker.find({}).populate({ path: 'assignedTo', select: 'username' }).select('sprint status')
+        const dataBySprint = await issuetracker.find({}).populate({ path: 'assignedTo', select: 'username' }).select('sprint status')      
+        
         if (dataBySprint) {
+            const sprintStatusCounts = {};
             const userSprints = {};
+            for (let i = 1; i <= 10; i++) {
+                sprintStatusCounts[`sprint${i}`] = {
+                  InProgress: 0,
+                  Opened:0,
+                  Closed:0,
+                  Assigned:0,
+                  Resolved:0,
+                  Testing:0,
+                  Verified:0,
+                  Hold:0,
+                };
+              }
+          
+              dataBySprint.forEach(item => {
+                const { sprint, status } = item;
+                sprintStatusCounts[`sprint${sprint}`][status]++;
+              });
             dataBySprint.forEach(item => {
                 const { assignedTo: { username }, sprint } = item;
                 if (!userSprints[username]) {
@@ -31,7 +50,8 @@ const getBugsBySprint = async (req, res) => {
                 userSprints[username].totalCount++;
             });
             const dataset = Object.values(userSprints);
-            res.status(200).json({ message: "Success", error: false, response: dataset, status: 200 })
+            console.log(sprintStatusCounts,dataset);
+            res.status(200).json({ message: "Success", error: false, response: dataset, sprintCount:sprintStatusCounts, status: 200 })
         }
         else {
             res.status(404).json({ message: "Error", error: true, response: [], status: 404 })
