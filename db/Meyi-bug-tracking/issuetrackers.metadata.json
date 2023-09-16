@@ -1,0 +1,1 @@
+{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"}],"uuid":"cedb34bde0c246e6a2a3d848a87a79c0","collectionName":"issuetrackers","type":"collection"}
