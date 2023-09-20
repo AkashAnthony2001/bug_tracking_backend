@@ -1,6 +1,6 @@
 const Router = require('express')
 
-const { getBugs , createBugs , updateBugs , deleteBugs , assignedTo , reportedBy , generateBugId , getBugsBySprint , getUsersSprintData , barAssignClosed } = require('../controllers/issuetracker.controller');
+const { getBugs , createBugs , updateBugs , deleteBugs , assignedTo , reportedBy , generateBugId , getBugsBySprint , getUsersSprintData , barAssignClosed , updateSprint} = require('../controllers/issuetracker.controller');
 const { verifyToken } = require('../utils/helpers');
 
 const issueTrackerRouter = Router();
@@ -16,5 +16,6 @@ issueTrackerRouter.delete('/:id', verifyToken,deleteBugs)
 issueTrackerRouter.post('/generateId/',verifyToken,generateBugId)
 issueTrackerRouter.get('/userSprint',verifyToken,getUsersSprintData)
 issueTrackerRouter.get('/status',verifyToken,barAssignClosed)
+issueTrackerRouter.put('/sprint/:id',verifyToken,updateSprint)
 
 module.exports = issueTrackerRouter

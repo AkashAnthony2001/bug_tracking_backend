@@ -248,9 +248,10 @@ const updateBugs = async (req, res) => {
     try {
         const id = req.params.id
         console.log(req.body);
-        const { status, updatedby , comment} = req.body
+        const { status, updatedby , sprint, comment} = req.body
         const dataToUpdate = {
             status: status,
+            sprint:sprint
         }
         const updatedData = await issuetracker.findByIdAndUpdate(id, dataToUpdate, { new: true })
         console.log(updatedData);
@@ -263,6 +264,20 @@ const updateBugs = async (req, res) => {
         console.log(issueStatusData);
         await issueStatusData.save()
         res.status(201).json({ status: "success", error: false, message: "Status Updated" })
+    } catch (error) {
+        res.send(error)
+    }
+}
+
+const updateSprint = async (req, res) => {
+    try {
+        const id = req.params.id
+        const {sprint} = req.body
+        const dataToUpdate = {
+            sprint:sprint
+        }
+        const updatedData = await issuetracker.findByIdAndUpdate(id, dataToUpdate, { new: true })
+        res.status(201).json({ status: "success",response:updatedData, error: false, message: "Status Updated" })
     } catch (error) {
         res.send(error)
     }
@@ -287,4 +302,4 @@ const deleteBugs = async (req, res) => {
 
 
 
-module.exports = { getBugs, createBugs, updateBugs, deleteBugs, assignedTo, reportedBy, generateBugId, getBugsBySprint, getUsersSprintData , barAssignClosed }
+module.exports = { getBugs, createBugs, updateBugs, deleteBugs, assignedTo, reportedBy, generateBugId, getBugsBySprint, getUsersSprintData , barAssignClosed, updateSprint }
