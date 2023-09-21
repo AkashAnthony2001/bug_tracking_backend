@@ -16,28 +16,28 @@ const getBugs = async (req, res) => {
 
 const getBugsBySprint = async (req, res) => {
     try {
-        const dataBySprint = await issuetracker.find({}).populate({ path: 'assignedTo', select: 'username' }).select('sprint status')      
-        
+        const dataBySprint = await issuetracker.find({}).populate({ path: 'assignedTo', select: 'username' }).select('sprint status')
+
         if (dataBySprint) {
             const sprintStatusCounts = {};
             const userSprints = {};
             for (let i = 1; i <= 10; i++) {
                 sprintStatusCounts[`sprint${i}`] = {
-                  InProgress: 0,
-                  Opened:0,
-                  Closed:0,
-                  Assigned:0,
-                  Resolved:0,
-                  Testing:0,
-                  Verified:0,
-                  Hold:0,
+                    InProgress: 0,
+                    Opened: 0,
+                    Closed: 0,
+                    Assigned: 0,
+                    Resolved: 0,
+                    Testing: 0,
+                    Verified: 0,
+                    Hold: 0,
                 };
-              }
-          
-              dataBySprint.forEach(item => {
+            }
+
+            dataBySprint.forEach(item => {
                 const { sprint, status } = item;
                 sprintStatusCounts[`sprint${sprint}`][status]++;
-              });
+            });
             dataBySprint.forEach(item => {
                 const { assignedTo: { username }, sprint } = item;
                 if (!userSprints[username]) {
@@ -51,7 +51,7 @@ const getBugsBySprint = async (req, res) => {
             });
             const dataset = Object.values(userSprints);
             const statusCount = Object.entries(sprintStatusCounts)
-            res.status(200).json({ message: "Success", error: false, response: dataset, sprintCount:statusCount, status: 200 })
+            res.status(200).json({ message: "Success", error: false, response: dataset, sprintCount: statusCount, status: 200 })
         }
         else {
             res.status(404).json({ message: "Error", error: true, response: [], status: 404 })
@@ -98,7 +98,7 @@ const getUsersSprintData = async (req, res) => {
             };
         });
 
-        res.status(200).json({error:false, response:data, message:'Success', status:200});
+        res.status(200).json({ error: false, response: data, message: 'Success', status: 200 });
     } catch (error) {
         console.error('Error:', error);
         res.status(404).json({ message: 'Error', error: true, response: [], status: 404 });
@@ -107,34 +107,34 @@ const getUsersSprintData = async (req, res) => {
 }
 
 
-const barAssignClosed = async(req, res) => {
+const barAssignClosed = async (req, res) => {
     try {
         const statusData = await issuetracker.find().populate({ path: 'assignedTo', select: 'username' }).select('status')
-    
+
         const statusCount = {}
-    
+
         statusData.forEach(item => {
             const username = item.assignedTo.username
             const status = item.status
-    
+
             if (!statusCount[username]) {
                 statusCount[username] = { username: username, Assigned: 0, Closed: 0 }
             }
-    
+
             if (status === "Assigned") {
                 statusCount[username].Assigned++;
             } else if (status === "Closed") {
                 statusCount[username].Closed++;
             }
         });
-    
+
         const statusCountData = Object.values(statusCount);
-    
-        res.status(200).json({status:200, message:"Success", error:false, response:statusCountData});
+
+        res.status(200).json({ status: 200, message: "Success", error: false, response: statusCountData });
     } catch (error) {
         res.status(404).json({ message: 'Error', error: true, response: [], status: 404 });
     }
-    
+
 }
 
 const assignedTo = async (req, res) => {
@@ -220,7 +220,7 @@ const createBugs = async (req, res) => {
             bug_id: bug_id,
             status: status,
             updatedby: createdby,
-            comments:"N/A"
+            comments: "N/A"
         })
         const issueData = await issueStatusData.save()
         res.send({ datas, issueData })
@@ -248,10 +248,10 @@ const updateBugs = async (req, res) => {
     try {
         const id = req.params.id
         console.log(req.body);
-        const { status, updatedby , sprint, comment} = req.body
+        const { status, updatedby, sprint, comment } = req.body
         const dataToUpdate = {
             status: status,
-            sprint:sprint
+            sprint: sprint
         }
         const updatedData = await issuetracker.findByIdAndUpdate(id, dataToUpdate, { new: true })
         console.log(updatedData);
@@ -259,7 +259,7 @@ const updateBugs = async (req, res) => {
             bug_id: updatedData.bug_id,
             status: updatedData.status,
             updatedby: updatedby,
-            comments:req.body.comment
+            comments: req.body.comment
         })
         console.log(issueStatusData);
         await issueStatusData.save()
@@ -272,29 +272,32 @@ const updateBugs = async (req, res) => {
 const updateSprint = async (req, res) => {
     try {
         const id = req.params.id
-        const {sprint} = req.body
+        const { sprint } = req.body
         const dataToUpdate = {
-            sprint:sprint
+            sprint: sprint
         }
         const updatedData = await issuetracker.findByIdAndUpdate(id, dataToUpdate, { new: true })
-        res.status(201).json({ status: "success",response:updatedData, error: false, message: "Status Updated" })
+        res.status(201).json({ status: "success", response: updatedData, error: false, message: "Status Updated" })
     } catch (error) {
         res.send(error)
+    }
+}
+
+const updateAllBugs = async (req, res) => {
+    const id = req.params.id;
+    try {
+        const updateAllData = await issuetracker.findByIdAndUpdate(id, req.body, { new: true })
+        res.status(201).json({ status: "success", response: updateAllData, error: false, message: "Status Updated" })
+    } catch (error) {
+        res.send(error.message)
     }
 }
 
 const deleteBugs = async (req, res) => {
     try {
         const id = req.params.id
-        const assigned = await issuetracker.findById(id).populate('assignedTo').exec()
-        if (assigned.assignedTo.length > 0 && assigned.status === "Closed") {
-            const deletingBugs = await issuetracker.findByIdAndDelete(id)
-            res.status(200).json({ status: 200, message: "Bug Deleted ", error: false })
-        }
-        else {
-            res.status(405).json({ status: 405, message: "Cannot delete bugs assigned to user", error: false })
-        }
-        res.send(assigned)
+        await issuetracker.findByIdAndDelete(id)
+        res.status(200).json({ status: 200, message: "Bug Deleted ", error: false })
     } catch (error) {
         res.send(error)
     }
@@ -302,4 +305,4 @@ const deleteBugs = async (req, res) => {
 
 
 
-module.exports = { getBugs, createBugs, updateBugs, deleteBugs, assignedTo, reportedBy, generateBugId, getBugsBySprint, getUsersSprintData , barAssignClosed, updateSprint }
+module.exports = { getBugs, createBugs, updateBugs, deleteBugs, assignedTo, reportedBy, generateBugId, getBugsBySprint, getUsersSprintData, barAssignClosed, updateSprint, updateAllBugs }
