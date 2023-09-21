@@ -118,13 +118,16 @@ const barAssignClosed = async (req, res) => {
             const status = item.status
 
             if (!statusCount[username]) {
-                statusCount[username] = { username: username, Assigned: 0, Closed: 0 }
+                statusCount[username] = { username: username, Assigned: 0, Closed: 0, InProgress: 0 }
             }
 
             if (status === "Assigned") {
                 statusCount[username].Assigned++;
             } else if (status === "Closed") {
                 statusCount[username].Closed++;
+            } else if(status === "InProgress"){
+                statusCount[username].InProgress++;
+
             }
         });
 
