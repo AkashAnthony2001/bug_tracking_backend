@@ -140,7 +140,7 @@ const barAssignClosed = async (req, res) => {
 
 }
 
-const assignedTo = async (req, res) => {
+const assignedToMe = async (req, res) => {
     const username = req.params.username;
     try {
         const issuesData = await issuetracker
@@ -169,7 +169,7 @@ const assignedTo = async (req, res) => {
     }
 }
 
-const reportedBy = async (req, res) => {
+const reportedByMe = async (req, res) => {
     const username = req.params.username;
     try {
         const issuesData = await issuetracker
@@ -288,9 +288,27 @@ const updateSprint = async (req, res) => {
 
 const updateAllBugs = async (req, res) => {
     const id = req.params.id;
+    console.log(req.body);
     try {
-        const updateAllData = await issuetracker.findByIdAndUpdate(id, req.body, { new: true })
-        res.status(201).json({ status: "success", response: updateAllData, error: false, message: "Status Updated" })
+        const {bug_id, bug_description, severity, status, sprint, customerfound, estimate_date, createdby, bug_type, projectId, moduleId, assignedTo, reportedBy} = req.body
+        const dataToUpdate = {
+            bug_id: bug_id,
+            bug_description: bug_description,
+            bug_type: bug_type,
+            severity: severity,
+            projectId: projectId._id,
+            moduleId: moduleId._id,
+            status: status,
+            assignedTo: assignedTo._id,
+            reportedBy: reportedBy._id,
+            sprint: sprint,
+            customerfound: customerfound,
+            estimate_date: estimate_date,
+            createdby: createdby
+        }
+        const updateAllData = await issuetracker.findByIdAndUpdate(id, dataToUpdate, { new: true })
+        console.log(updateAllData);
+        res.status(201).json({ status: "success", response: updateAllData, error: false, message: "Bugs Updated" })
     } catch (error) {
         res.send(error.message)
     }
@@ -308,4 +326,4 @@ const deleteBugs = async (req, res) => {
 
 
 
-module.exports = { getBugs, createBugs, updateBugs, deleteBugs, assignedTo, reportedBy, generateBugId, getBugsBySprint, getUsersSprintData, barAssignClosed, updateSprint, updateAllBugs }
+module.exports = { getBugs, createBugs, updateBugs, deleteBugs, assignedToMe, reportedByMe, generateBugId, getBugsBySprint, getUsersSprintData, barAssignClosed, updateSprint, updateAllBugs }
