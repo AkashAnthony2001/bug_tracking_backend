@@ -285,6 +285,19 @@ const updateSprint = async (req, res) => {
         res.send(error)
     }
 }
+const updateAssiUser = async (req, res) => {
+    try {
+        const id = req.params.id
+        const { assignedTo } = req.body
+        const dataToUpdate = {
+            assignedTo: assignedTo
+        }
+        const updatedData = await issuetracker.findByIdAndUpdate(id, dataToUpdate, { new: true })
+        res.status(201).json({ status: "success", response: updatedData, error: false, message: "Assigned User Updated" })
+    } catch (error) {
+        res.send(error)
+    }
+}
 
 const updateAllBugs = async (req, res) => {
     const id = req.params.id;
@@ -326,4 +339,4 @@ const deleteBugs = async (req, res) => {
 
 
 
-module.exports = { getBugs, createBugs, updateBugs, deleteBugs, assignedToMe, reportedByMe, generateBugId, getBugsBySprint, getUsersSprintData, barAssignClosed, updateSprint, updateAllBugs }
+module.exports = { getBugs, createBugs, updateBugs, deleteBugs, assignedToMe, reportedByMe, generateBugId, getBugsBySprint, getUsersSprintData, barAssignClosed, updateSprint, updateAllBugs, updateAssiUser }
