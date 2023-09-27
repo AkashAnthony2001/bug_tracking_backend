@@ -235,12 +235,13 @@ const createBugs = async (req, res) => {
 const generateBugId = async (req, res) => {
     const { projectid, moduleid } = req.body;
     try {
-        const countDoc = await issuetracker.countDocuments();
-        const nextBugId = `${(countDoc + 1).toString().padStart(5, '0')}`;
+        const countDoc = await issuetracker.find({}).sort({_id:-1}).limit(1)
+        const newBugId = countDoc[0].bug_id.split('-')[2]
+        const nextBugId = `${(newBugId).padStart(5, '0')}`;
         const projectData = await projects.findById(projectid);
         const moduleData = await modules.findById(moduleid);
 
-        const bugId = `${formatRoute(projectData.title)}-${formatRoute(moduleData.module_name)}-${nextBugId}`;
+        const bugId = `${formatRoute(projectData.title)}-${formatRoute(moduleData.module_name)}-${String(parseInt(nextBugId) + 1).padStart(5, '0')}`;
         res.status(200).json({ status: 200, message: "Bug Id Created", response: bugId, error: false });
     } catch (error) {
         console.error(error);
